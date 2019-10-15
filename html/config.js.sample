@@ -1,0 +1,3 @@
+var configClass = function(){
+  this.gas_api_url = "";
+};

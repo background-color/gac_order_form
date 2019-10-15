@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <title>OrderForm</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/css-loader/3.3.3/css-loader.css">
+<style>
+[v-cloak] {
+  display: none;
+}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+  <a class="navbar-brand" href="#">OrderForm</a>
+</nav>
+
+<main role="main" class="container">
+  <div class="container" id="app" v-cloak>
+    <div class="loader loader-default" v-bind:class="{'is-active':isLoad}"></div>
+    <div v-show="warning" class="alert alert-danger" role="alert">{{warning}}</div>
+    <div v-show="info" class="alert alert-info" role="alert">{{info}}</div>
+
+    <!-- UserId Search -->
+    <div v-if="status=='search'" class="my-5">
+      <p>ユーザIDを入力してください</p>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="user_id" class="mx-1">User ID</label>
+          <input type="text" class="form-control" id="user_id" v-model="user_id" placeholder="User Id">
+        </div>
+        <div class="col-auto my-1">
+          <button type="button" class="btn btn-primary px-5" @click="user_search" :disabled="!user_id">Enter</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Order Edit -->
+    <div v-if="status=='edit'">
+      <h1>注文内容</h1>
+      <div class="my-3">
+        <p>注文者:  {{user.name}} さま</p>
+      </div>
+      <table class="table table-sm order-items-table">
+        <thead>
+          <tr class="table-secondary">
+            <th>id</th>
+            <th>商品名</th>
+            <th>単価</th>
+            <th>注文数</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody v-for="(item, i) in items">
+          <tr>
+            <td>{{item.id}}</th>
+            <td>{{item.name}}</th>
+            <td class="price">{{item.price | money_delimiter}}</td>
+            <td >
+              <input type="text"
+                v-model="item.quantity"
+                :name="'quantity_'+i"
+                v-validate="'numeric'"
+                :class="{'is-invalid': errors.has('quantity_'+i)}"
+                class="form-control"
+                style="width:5em">
+            </td>
+            <td class="text-right">{{item.price * item.quantity || 0}}</th>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="table-secondary">
+            <td colspan="4" class="text-right">合計金額</td>
+            <td class="text-right">{{sum_price}}</th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="text-right my-2">
+        <p v-if="is_item_quantity_zero" class="text-danger">注文数を入力してください</p>
+        <button type="button" class="btn btn-primary" @click="submit" :disabled="errors.any() || is_item_quantity_zero">注文する</button>
+      </div>
+    </div>
+
+
+    <!-- done -->
+    <div v-if="status=='done'">
+      <p>
+        注文を承りました
+      </p>
+    </div>
+
+    </div>
+  </div>
+</main>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vee-validate@2.0.9/dist/vee-validate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+<script src="config.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
