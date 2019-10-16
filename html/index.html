@@ -50,15 +50,15 @@
             <th>商品名</th>
             <th>単価</th>
             <th>注文数</th>
-            <th></th>
+            <th>小計</th>
           </tr>
         </thead>
         <tbody v-for="(item, i) in items">
           <tr>
             <td>{{item.id}}</th>
             <td>{{item.name}}</th>
-            <td class="price">{{item.price | money_delimiter}}</td>
-            <td >
+            <td>{{item.price | money_delimiter}}</td>
+            <td>
               <input type="text"
                 v-model="item.quantity"
                 :name="'quantity_'+i"

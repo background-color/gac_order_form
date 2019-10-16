@@ -42,10 +42,25 @@ var app = new Vue({
           this.status = 'edit';
         });
     },
-    async submit(){
+    submit(){
       this.clear();
       this.isLoad = true;
-      this.status = 'done';
+      var params = new URLSearchParams();
+      params.append('user_id', this.user.id);
+      params.append('total_amount', this.sum_price);
+      for (var i in this.items) {
+        params.append('item_'+this.items[i].id, this.items[i].quantity || 0);
+      }
+      axios
+        .post(config.gas_api_url, params)
+        .then((res) => {
+          this.isLoad = false;
+          if(res.data.is_success){
+            this.status = 'done';
+          } else {
+            this.warning = "登録に失敗しました";
+          }
+        });
     },
   },
   filters: {

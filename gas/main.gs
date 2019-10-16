@@ -13,10 +13,33 @@ function doGet(e) {
     case 'item':
       rtn = sh._find('item');
       break;
-    case 'order':
-      break;
   };
 
+  return set_mine_type(rtn);
+}
+
+function doPost(e) {
+  var user_id = e.parameter.user_id;
+  var total_amount = e.parameter.total_amount;
+  var items = [];
+  var sh = new orderSheetClass();
+  var rtn;
+
+  for (var i = 1; i <= 10; i++) {
+    items[i] = e.parameter["item_"+i];
+  }
+
+  if(!user_id || !total_amount){
+    rtn = {is_success: false, error: "呼び出し方法が正しくありません"};
+    return set_mine_type(rtn);
+  }
+
+  var id = sh._insert_order('order', user_id, total_amount, items);
+  rtn = {is_success: true, id: id};
+  return set_mine_type(rtn);
+}
+
+function set_mine_type(rtn){
   rtn = ContentService.createTextOutput(JSON.stringify(rtn));
   rtn.setMimeType(ContentService.MimeType.TEXT);
   return rtn;
@@ -48,4 +71,26 @@ orderSheetClass.prototype._find = function(sheet_name) {
     sheet_data[row[0]] = row_hash;
   }
   return sheet_data;
+}
+
+
+orderSheetClass.prototype._insert_order = function(sheet_name, user_id, total_amount, items) {
+  var sheet = SpreadsheetApp.openById(this.sheet_id).getSheetByName(sheet_name);
+  if(!sheet) return false;
+  var last_row = sheet.getLastRow();
+  var today = new Date();
+
+  var rows = [
+    last_row,
+    user_id,
+    today,
+    total_amount
+  ];
+
+  for (var i = 1, l = items.length; i < l; i++) {
+    rows.push(items[i]);
+  }
+
+  sheet.getRange(last_row+1, 1, 1, 14).setValues([rows]);
+  return last_row
 }
