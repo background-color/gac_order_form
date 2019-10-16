@@ -1,4 +1,4 @@
-# gac_order_form
+# gas_order_form
 Google SpreadSheetsとGASとVue.jsで注文フォームを作る
 
 # 設定
