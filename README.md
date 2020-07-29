@@ -1,5 +1,5 @@
 # gas_order_form
-Google SpreadSheetsとGASとVue.jsで注文フォームを作る
+Google SpreadSheets、GAS、Vue.jsで注文フォームを作る
 
 # 設定
 - spreadsheets/sample.xlsx -> Google SpreadSheets にインポート
